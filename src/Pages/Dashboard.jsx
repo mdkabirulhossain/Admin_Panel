@@ -19,12 +19,12 @@ const Dashboard = () => {
 
         if (editId) {
             setTasks(
-                tasks.map(task => task.id === editId ? { ...task, ...form } : tasks)
+                tasks.map(task => task.id === editId ? { ...task, ...form } : task)
             )
 
             setEditId(null)
         } else {
-            setTasks([...tasks, { id: Date.now(), status: false, ...form }])
+            setTasks([...tasks, { id: Date.now(), status:false, ...form }])
         }
 
         setForm({
@@ -39,8 +39,32 @@ const Dashboard = () => {
     }, [])
 
     useEffect(()=>{
-        localStorage.setItem('tasks', JSON.stringify(tasks))
+        if(tasks.length > 0){
+            localStorage.setItem('tasks', JSON.stringify(tasks))
+        }
     }, [tasks])
+
+
+    //HandleEdit
+    const handleEdit = (task)=>{
+        setForm({
+            title:task.title,
+            date:task.date
+        })
+        setEditId(task.id)
+    }
+    //Handle Delete
+    const handleDelete = id =>{
+        setTasks(
+            tasks.filter(task => task.id !== id)
+        )
+    }
+
+    const handleStatus = id =>{
+        setTasks(
+            tasks.map(task => task.id === id? {...task, status:!task.status}: task)
+        )
+    }
 
     return (
         <div>
@@ -67,7 +91,7 @@ const Dashboard = () => {
                         <input type="text" onChange={onChangeHandler} name='title' value={form.title} placeholder='Please enter the title' className='w-full p-2 my-2 border-2 border-amber-700 outline-none rounded-2xl' required />
                         <div className='flex justify-between'>
                             <input type="date" onChange={onChangeHandler} name='date' value={form.date} className='p-2 border-2 border-amber-700 rounded-2xl outline-none' required />
-                            <button type='submit' className='bg-amber-600 px-10 py-2 rounded-2xl cursor-pointer'>Add</button>
+                            <button type='submit' className='bg-amber-600 px-10 py-2 rounded-2xl cursor-pointer'>{editId? "Updated" : "Add"}</button>
                         </div>
                     </form>
                 </div>
@@ -91,9 +115,9 @@ const Dashboard = () => {
                                 <tr className='text-center' key={task.id}>
                                     <td className='py-4'>{task.title}</td>
                                     <td className='py-4'>{task.date}</td>
-                                    <td className='py-4'><button>Edit</button></td>
-                                    <td className='py-4'><button>Delete</button></td>
-                                    <td className='py-4'>Processing</td>
+                                    <td className='py-4'><button onClick={()=> handleEdit(task)} className='bg-amber-700 px-4 py-1 rounded-2xl'>Edit</button></td>
+                                    <td className='py-4'><button onClick={()=>handleDelete(task.id)} className='bg-red-700 px-4 py-1 rounded-2xl'>Delete</button></td>
+                                    <td className='py-4'><button onClick={()=>handleStatus(task.id)} className='bg-amber-700 px-4 py-1 rounded-2xl'>{task.status? 'Done' : 'Processing'}</button></td>
                                 </tr>
                             ))
                         }
