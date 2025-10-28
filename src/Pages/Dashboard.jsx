@@ -76,11 +76,11 @@ const Dashboard = () => {
                 </div>
                 <div className='text-center p-10 shadow-[0_3px_6px_rgba(0,0,0,0.2)]'>
                     <h1 className='font-bold uppercase'>Processing</h1>
-                    <p>0</p>
+                    <p>{tasks.filter(task => task.status ===false).length}</p>
                 </div>
                 <div className='text-center p-10 shadow-[0_3px_6px_rgba(0,0,0,0.2)]'>
                     <h1 className='font-bold uppercase'>Completed</h1>
-                    <p>0</p>
+                    <p>{tasks.filter(task => task.status === true).length}</p>
                 </div>
             </div>
 
